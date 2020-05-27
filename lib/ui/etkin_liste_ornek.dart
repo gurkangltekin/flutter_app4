@@ -26,13 +26,15 @@ class EtkinListeOrnek extends StatelessWidget {
           title: Text(tumOgrenciler[index]._isim),
           subtitle: Text(tumOgrenciler[index]._aciklama),
           trailing: Icon(Icons.keyboard_arrow_down),
-          onTap: (){
-            debugPrint("seçilen öğrenc: ${tumOgrenciler[index]._isim}");
-            Toast.show("seçilen öğrenc: ${tumOgrenciler[index]._isim}", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
+          onTap: () {
+            debugPrint("seçilen öğrenci: ${tumOgrenciler[index].toString()}");
+            toastMesajGoster(context, index, false);
           },
-          onLongPress: (){
-            debugPrint("uzun seçilen öğrenc: ${tumOgrenciler[index]._isim}");
-            Toast.show("uzun seçilen öğrenc: ${tumOgrenciler[index]._isim}", context, duration: Toast.LENGTH_LONG, gravity:  Toast.CENTER);
+          onLongPress: () {
+            debugPrint(
+                "uzun seçilen öğrenci: ${tumOgrenciler[index].toString()}");
+            toastMesajGoster(context, index, true);
+            alertDialogGoster(context, index);
           },
         ),
       ),
@@ -48,6 +50,60 @@ class EtkinListeOrnek extends StatelessWidget {
           (index + 1) % 2 == 0 ? true : false),
     );
   }
+
+  void alertDialogGoster(BuildContext context, int index) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Alert Diyalog Başlığı"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  alertDiyalogIcerigi(tumOgrenciler[index].toString()),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              ButtonBar(
+                children: <Widget>[
+                  FlatButton(
+                    child: Text("Tamam"),
+                    onPressed: () {
+
+                    },
+                  ),
+                  RaisedButton(
+                    child: Text(
+                      "Kapat",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    color: Colors.red,
+                  ),
+                ],
+              )
+            ],
+          );
+        });
+  }
+
+  void toastMesajGoster(BuildContext context, int index, bool uzunBasilma) {
+    Toast.show(
+        uzunBasilma
+            ? "uzun basılarak seçilen öğrenci: ${tumOgrenciler[index].toString()}"
+            : "seçilen öğrenci: ${tumOgrenciler[index].toString()}",
+        context,
+        duration: 5,
+        gravity: Toast.BOTTOM);
+  }
+
+  Text alertDiyalogIcerigi(String icerik){
+    return Text(icerik);
+  }
 }
 
 class Ogrenci {
@@ -56,4 +112,9 @@ class Ogrenci {
   bool _cinsiyet;
 
   Ogrenci(this._isim, this._aciklama, this._cinsiyet);
+
+  @override
+  String toString() {
+    return 'Ogrenci ismi: $_isim, açıklaması: $_aciklama, cinsiyeti: $_cinsiyet}';
+  }
 }
